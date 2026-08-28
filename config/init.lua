@@ -16,18 +16,29 @@ end
 ---@param new_options table new options to append
 ---@return Config
 function Config:append(new_options)
-   for k, v in pairs(new_options) do
-      if self.options[k] ~= nil then
-         wezterm.log_warn(
-            'Duplicate config option detected: ',
-            { old = self.options[k], new = new_options[k] }
-         )
-         goto continue
-      end
-      self.options[k] = v
-      ::continue::
-   end
-   return self
+  for k, v in pairs(new_options) do
+     local existing = self.options[k]
+     if existing ~= nil then
+        if type(existing) == 'table' and type(v) == 'table' then
+           local merged = {}
+           for ek, ev in pairs(existing) do
+              merged[ek] = ev
+           end
+           for nk, nv in pairs(v) do
+              merged[nk] = nv
+           end
+           self.options[k] = merged
+        else
+           wezterm.log_warn(
+              'Duplicate config option detected; keeping original: ',
+              { key = k }
+           )
+        end
+     else
+        self.options[k] = v
+     end
+  end
+  return self
 end
 
 return Config
