@@ -41,12 +41,32 @@ if ok2 and loaded2 then
   end
 end
 
--- 从本地覆盖文件取工作区定义，没有就用空表
-local workspace_defs = local_config.workspaces or {}
-
--- 动态注册工作区快捷键
 local options = config.options
-for _, ws in ipairs(workspace_defs) do
+
+-- 从本地覆盖中提取工作区定义（不是合法 Config 字段，不能合并进 options）
+local local_workspaces = local_config.workspaces or {}
+
+-- 把本地覆盖合回最终配置
+local append_fields = { launch_menu = true, keys = true }
+for k, v in pairs(local_config) do
+  if k == 'workspaces' then
+    -- 跳过，单独处理
+  elseif type(options[k]) == 'table' and type(v) == 'table' then
+    if append_fields[k] then
+      for _, nv in ipairs(v) do
+        table.insert(options[k], nv)
+      end
+    else
+      for nk, nv in pairs(v) do
+        options[k][nk] = nv
+      end
+    end
+  else
+    options[k] = v
+  end
+end
+
+for _, ws in ipairs(local_workspaces) do
   table.insert(options.keys, {
     key = ws.key,
     mods = 'LEADER',

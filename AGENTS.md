@@ -39,6 +39,7 @@ wezterm.lua
 | `config/launch.lua` | 平台相关默认 shell + 启动菜单 |
 | `config/domains.lua` | SSH/WSL/Unix 域定义（目前为空，按需填充） |
 | `utils/platform.lua` | 平台检测，导出 `is_win/is_mac/is_linux` |
+| `utils/mod_keys.lua` | 平台自适应 mod 键位映射（`SUPER`/`ALT`） |
 | `utils/backdrops.lua` | 背景图片选择器/随机/循环/聚焦模式 |
 | `utils/gpu_adapter.lua` | GPU 后端自动选择（Dx12/Vulkan/Metal/OpenGL 优先级） |
 | `utils/cells.lua` | `wezterm.format` 片段构造器，链式 API |
@@ -82,11 +83,61 @@ wezterm.lua
 | `utils/backdrops.lua` | 背景图控制器，含 `set_files()` 生命周期约束 |
 | `utils/gpu_adapter.lua` | GPU 选择策略，可手动/自动 |
 | `utils/cells.lua` | 状态栏片段渲染引擎 |
-| `.stylua.toml` | 格式化配置 |
-| `.luacheckrc` | Lint 配置 |
-| `.luarc.json` | LSP 配置 |
-| `workspace_local.lua` | 本地工作区定义（gitignore 外，可个性化） |
-| `launch_local.lua` | 本地启动配置（gitignore 外，可个性化） |
+## 本地覆盖文件写法
+
+两个本地覆盖文件均为纯 Lua 表返回，由 `wezterm.lua` 通过 `pcall(dofile, ...)` 加载；缺失时不报错，静默跳过。
+
+```lua
+-- workspace_local.lua
+local wezterm = require('wezterm')
+local act = wezterm.action
+local mod = require('utils.mod_keys')
+
+return {
+  default_prog = { 'pwsh.exe', '-NoLogo' },
+  launch_menu = {
+    {
+      label = 'PowerShell Core (cu-openmrcp)',
+      args = { 'pwsh.exe', '-NoLogo' },
+      cwd = '<workspace-path>',
+    },
+  },
+  keys = {
+    {
+      key = 'o',
+      mods = mod.SUPER_REV,
+      action = act.SwitchToWorkspace {
+        name = 'openmrcp',
+        spawn = { cwd = '<workspace-path>' },
+      },
+    },
+  },
+}
+```
+
+```lua
+-- launch_local.lua
+local wezterm = require('wezterm')
+local act = wezterm.action
+
+return {
+  keys = {
+    {
+      key = 'o',
+      mods = 'CTRL|SHIFT',
+      action = act.SwitchToWorkspace {
+        name = 'openmrcp',
+        spawn = { cwd = '<workspace-path>' },
+      },
+    },
+  },
+}
+```
+
+**约束**：
+- 仅返回顶层配置表，不调用 `wezterm.on` / `wezterm.globalize` 等副作用函数
+- 路径等敏感信息用占位符，禁止提交真实工作区路径
+- 不需要 `---@class` / `---@type` 注解（数据表，无自定义类型）
 
 ## 运行时与工具链偏好
 

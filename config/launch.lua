@@ -12,7 +12,6 @@ if platform.is_win then
         { label = 'Command Prompt',  args = { 'cmd' } },
         { label = 'Default Wsl',     args = { 'wsl' } },
         { label = 'neovim',          args = { 'nvim' } },
-        { label = 'mrcp',         args = { 'pwsh', '-NoLogo' },   cwd = 'C:\\work-spaces\\code\\VCS_RUST_SWITCH_NCE\\cu-openmrcp' }
     }
 elseif platform.is_mac then
     options.default_prog = { '/opt/homebrew/bin/fish', '-l' }
