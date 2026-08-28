@@ -33,6 +33,14 @@ if ok and loaded then
   local_config = loaded
 end
 
+-- 动态加载启动本地覆盖文件（不存在也不报错）
+local ok2, loaded2 = pcall(dofile, wezterm.config_dir .. '/launch_local.lua')
+if ok2 and loaded2 then
+  for k, v in pairs(loaded2) do
+    local_config[k] = v
+  end
+end
+
 -- 从本地覆盖文件取工作区定义，没有就用空表
 local workspace_defs = local_config.workspaces or {}
 
