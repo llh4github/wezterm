@@ -4,7 +4,6 @@ local colors = require('colors.custom')
 
 return {
    max_fps = 120,
-   front_end = 'WebGpu',
    webgpu_power_preference = 'HighPerformance',
    webgpu_preferred_adapter = gpu_adapters:pick_best(),
    -- window_decorations = 'NONE',
@@ -36,6 +35,8 @@ return {
    switch_to_last_active_tab_when_closing_tab = true,
 
    -- window
+   window_background_opacity = 0.9,
+
    window_padding = {
       left = 0,
       right = 0,
