@@ -210,8 +210,11 @@
 
   - [./config/domains.lua](./config/domains.lua) 用于自定义 SSH/WSL 域
   - [./config/launch.lua](./config/launch.lua) 用于设置首选 Shell 及其路径
+  - 本地覆盖文件：在配置目录下创建 [./workspace_local.lua](./workspace_local.lua) 和/或 [./launch_local.lua](./launch_local.lua)，用于存放不想提交到版本控制的个人配置（如工作区路径、启动菜单项等）。这两个文件缺失时会静默跳过，不会报错。
 
----
+    > 详见：[本地覆盖文件写法](#本地覆盖文件)
+
+&nbsp;
 
 ### 所有快捷键绑定
 
@@ -394,6 +397,73 @@
 | <kbd>l</kbd>   | `AdjustPaneSize` <sub>(方向：右)</sub> |
 | <kbd>q</kbd>   | `PopKeyTable` <sub>(退出)</sub>                |
 | <kbd>Esc</kbd> | `PopKeyTable` <sub>(退出)</sub>                |
+
+---
+
+### 本地覆盖文件
+
+本配置支持通过 `workspace_local.lua` 和 `launch_local.lua` 注入个人化配置，无需改动仓库内文件。
+
+- **位置**：放在 WezTerm 配置目录下，即 `wezterm.config_dir` 目录中
+- **行为**：`wezterm.lua` 会通过 `pcall(dofile, ...)` 加载；文件不存在时静默跳过，不会中断配置加载
+- **合并方式**：
+  - `workspace_local.lua`：直接合并进最终配置表
+  - `launch_local.lua`：会覆盖同名字段；对于 `launch_menu` 和 `keys` 等列表字段，会追加而非替换
+  - `workspaces` 字段会单独处理，最终转换为 `LEADER` 快捷键
+
+示例：
+
+```lua
+-- workspace_local.lua
+local wezterm = require('wezterm')
+local act = wezterm.action
+local mod = require('utils.mod_keys')
+
+return {
+  default_prog = { 'pwsh.exe', '-NoLogo' },
+  launch_menu = {
+    {
+      label = 'PowerShell Core (cu-openmrcp)',
+      args = { 'pwsh.exe', '-NoLogo' },
+      cwd = '<workspace-path>',
+    },
+  },
+  keys = {
+    {
+      key = 'o',
+      mods = mod.SUPER_REV,
+      action = act.SwitchToWorkspace {
+        name = 'openmrcp',
+        spawn = { cwd = '<workspace-path>' },
+      },
+    },
+  },
+}
+```
+
+```lua
+-- launch_local.lua
+local wezterm = require('wezterm')
+local act = wezterm.action
+
+return {
+  keys = {
+    {
+      key = 'o',
+      mods = 'CTRL|SHIFT',
+      action = act.SwitchToWorkspace {
+        name = 'openmrcp',
+        spawn = { cwd = '<workspace-path>' },
+      },
+    },
+  },
+}
+```
+
+**约束**：
+- 仅返回顶层配置表，不调用 `wezterm.on` / `wezterm.globalize` 等副作用函数
+- 路径等敏感信息用占位符，禁止提交真实工作区路径
+- 不需要 `---@class` / `---@type` 注解（数据表，无自定义类型）
 
 ---
 
