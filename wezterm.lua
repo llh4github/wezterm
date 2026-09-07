@@ -2,11 +2,6 @@ local Config = require('config')
 local wezterm = require('wezterm')
 local act = wezterm.action
 
-require('utils.backdrops')
-   :set_files()
-   -- :set_focus('#000000')
-   :random()
-
 require('events.right-status').setup()
 require('events.left-status').setup()
 require('events.tab-title').setup()

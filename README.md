@@ -18,14 +18,6 @@
 
 ### 功能特性
 
-- [**背景图片选择器**](https://github.com/KevinSilvester/wezterm-config/blob/master/utils/backdrops.lua)：
-
-  - 循环切换图片
-  - 模糊搜索图片
-  - 切换背景图片显示/隐藏
-
-  > 详见：[快捷键绑定](#背景图片)
-
 - [**GPU 适配器选择器**](https://github.com/KevinSilvester/wezterm-config/blob/master/utils/gpu_adapter.lua)：
 
   > :bulb: 仅当 [`front_end`](https://github.com/KevinSilvester/wezterm-config/blob/master/config/appearance.lua#L8) 选项设置为 `WebGpu` 时生效。
@@ -344,18 +336,6 @@
 | <kbd>SUPER</kbd>+<kbd>d</kbd> | 向下滚动 <sub>5 行</sub> |
 | <kbd>PageUp</kbd>             | 向上翻页                       |
 | <kbd>PageDown</kbd>           | 向下翻页                     |
-
-&nbsp;
-
-#### 背景图片
-
-| 快捷键                              | 动作                       |
-| --------------------------------- | ---------------------------- |
-| <kbd>SUPER</kbd>+<kbd>/</kbd>     | 随机选择图片          |
-| <kbd>SUPER</kbd>+<kbd>,</kbd>     | 切换到下一张图片          |
-| <kbd>SUPER</kbd>+<kbd>.</kbd>     | 切换到上一张图片      |
-| <kbd>SUPER_REV</kbd>+<kbd>/</kbd> | 模糊搜索图片           |
-| <kbd>SUPER</kbd>+<kbd>b</kbd>     | 切换背景聚焦模式 |
 
 &nbsp;
 

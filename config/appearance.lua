@@ -1,5 +1,4 @@
 local gpu_adapters = require('utils.gpu_adapter')
-local backdrops = require('utils.backdrops')
 local colors = require('colors.custom')
 
 return {
@@ -19,9 +18,6 @@ return {
 
    -- color scheme
    colors = colors,
-
-   -- background
-   -- background = backdrops:initial_options(false), -- set to true if you want wezterm to start on focus mode
 
    -- scrollbar
    enable_scroll_bar = true,
